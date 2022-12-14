@@ -40,7 +40,7 @@
 //  check  Timing Characteristics
 
 
-#include "AS5600.h"
+#include "AS5600_tiny.h"
 
 
 //  CONFIGURATION REGISTERS
@@ -82,9 +82,9 @@ const uint8_t AS5600_MAGNET_LOW    = 0x10;
 const uint8_t AS5600_MAGNET_DETECT = 0x20;
 
 
-AS5600::AS5600(TwoWire *wire)
+AS5600::AS5600(TwoWireTiny *tinywire)
 {
-  _wire = wire;
+  _tinywire = tinywire;
 }
 
 
@@ -98,12 +98,12 @@ bool AS5600::begin(int dataPin, int clockPin, uint8_t directionPin)
   }
   setDirection(AS5600_CLOCK_WISE);
 
-  _wire = &Wire;
+  _tinywire = &TinyWireM;
   if ((dataPin < 255) && (clockPin < 255))
   {
-    _wire->begin(dataPin, clockPin);
+    _tinywire->begin(dataPin, clockPin);
   } else {
-    _wire->begin();
+    _tinywire->begin();
   }
   if (! isConnected()) return false;
   return true;
@@ -120,7 +120,7 @@ bool AS5600::begin(uint8_t directionPin)
   }
   setDirection(AS5600_CLOCK_WISE);
 
-  _wire->begin();
+  _tinywire->begin();
   if (! isConnected()) return false;
   return true;
 }
@@ -128,8 +128,8 @@ bool AS5600::begin(uint8_t directionPin)
 
 bool AS5600::isConnected()
 {
-  _wire->beginTransmission(_address);
-  return ( _wire->endTransmission() == 0);
+  _tinywire->beginTransmission(_address);
+  return ( _tinywire->endTransmission() == 0);
 }
 
 
@@ -476,47 +476,47 @@ float AS5600::getAngularSpeed(uint8_t mode)
 //
 uint8_t AS5600::readReg(uint8_t reg)
 {
-  _wire->beginTransmission(_address);
-  _wire->write(reg);
-  _error = _wire->endTransmission();
+  _tinywire->beginTransmission(_address);
+  _tinywire->write(reg);
+  _error = _tinywire->endTransmission();
 
-  _wire->requestFrom(_address, (uint8_t)1);
-  uint8_t _data = _wire->read();
+  _tinywire->requestFrom(_address, (uint8_t)1);
+  uint8_t _data = _tinywire->read();
   return _data;
 }
 
 
 uint16_t AS5600::readReg2(uint8_t reg)
 {
-  _wire->beginTransmission(_address);
-  _wire->write(reg);
-  _error = _wire->endTransmission();
+  _tinywire->beginTransmission(_address);
+  _tinywire->write(reg);
+  _error = _tinywire->endTransmission();
 
-  _wire->requestFrom(_address, (uint8_t)2);
-  uint16_t _data = _wire->read();
+  _tinywire->requestFrom(_address, (uint8_t)2);
+  uint16_t _data = _tinywire->read();
   _data <<= 8;
-  _data += _wire->read();
+  _data += _tinywire->read();
   return _data;
 }
 
 
 uint8_t AS5600::writeReg(uint8_t reg, uint8_t value)
 {
-  _wire->beginTransmission(_address);
-  _wire->write(reg);
-  _wire->write(value);
-  _error = _wire->endTransmission();
+  _tinywire->beginTransmission(_address);
+  _tinywire->write(reg);
+  _tinywire->write(value);
+  _error = _tinywire->endTransmission();
   return _error;
 }
 
 
 uint8_t AS5600::writeReg2(uint8_t reg, uint16_t value)
 {
-  _wire->beginTransmission(_address);
-  _wire->write(reg);
-  _wire->write(value >> 8);
-  _wire->write(value & 0xFF);
-  _error = _wire->endTransmission();
+  _tinywire->beginTransmission(_address);
+  _tinywire->write(reg);
+  _tinywire->write(value >> 8);
+  _tinywire->write(value & 0xFF);
+  _error = _tinywire->endTransmission();
   return _error;
 }
 
@@ -525,7 +525,7 @@ uint8_t AS5600::writeReg2(uint8_t reg, uint16_t value)
 //
 //  AS5600L
 //
-AS5600L::AS5600L(uint8_t address, TwoWire *wire) : AS5600(wire)
+AS5600L::AS5600L(uint8_t address, TwoWireTiny *tinywire) : AS5600(tinywire)
 {
   _address = address;;   //  0x40 = default address AS5600L.
 }

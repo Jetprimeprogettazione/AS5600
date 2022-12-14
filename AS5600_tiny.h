@@ -1,15 +1,16 @@
 #pragma once
 //
-//    FILE: AS5600.h
+//    FILE: AS5600_tiny.h
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.3.1
 // PURPOSE: Arduino library for AS5600 magnetic rotation meter
 //    DATE: 2022-05-28
 //     URL: https://github.com/RobTillaart/AS5600
+// ATTINY PORTING: Manuele Sala 
 
 
 #include "Arduino.h"
-#include "Wire.h"
+#include <TinyWireM.h>
 
 
 #define AS5600_LIB_VERSION              (F("0.3.1"))
@@ -78,7 +79,7 @@ const uint8_t AS5600_WATCHDOG_ON        = 1;
 class AS5600
 {
 public:
-  AS5600(TwoWire *wire = &Wire);
+  AS5600(TwoWireTiny *tinywire = &TinyWireM);
 
 #if defined (ESP8266) || defined(ESP32)
            //  255 is software controlled direction pin
@@ -213,7 +214,7 @@ protected:
   uint8_t  _direction    = AS5600_CLOCK_WISE;
   uint8_t  _error        = 0;
 
-  TwoWire*  _wire;
+  TwoWireTiny*  _tinywire;
 
   //  for getAngularSpeed()
   uint32_t _lastMeasurement = 0;
@@ -231,7 +232,7 @@ protected:
 class AS5600L : public AS5600
 {
 public:
-  AS5600L(uint8_t address = 0x40, TwoWire *wire = &Wire);
+  AS5600L(uint8_t address = 0x40, TwoWireTiny *tinywire = &TinyWireM);
 
   bool     setAddress(uint8_t address);
 
