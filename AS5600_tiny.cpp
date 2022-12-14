@@ -1,5 +1,5 @@
 //
-//    FILE: AS56000.cpp
+//    FILE: AS56000_tiny.cpp
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.3.1
 // PURPOSE: Arduino library for AS5600 magnetic rotation meter
